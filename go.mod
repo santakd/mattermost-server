@@ -36,6 +36,7 @@ require (
 	github.com/glycerine/go-unsnap-stream v0.0.0-20190901134440-81cf024a9e0a // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.1 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/gobwas/ws v1.0.2
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/google/uuid v1.1.2 // indirect
@@ -65,6 +66,7 @@ require (
 	github.com/klauspost/compress v1.11.1 // indirect
 	github.com/ledongthuc/pdf v0.0.0-20200323191019-23c5852adbd2
 	github.com/lib/pq v1.8.0
+	github.com/mailru/easygo v0.0.0-20190618140210-3c14a0dc985f
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/mattermost/go-i18n v1.11.0
 	github.com/mattermost/gorp v1.6.2-0.20200624165429-2595d5e54111

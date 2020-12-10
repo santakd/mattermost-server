@@ -26,6 +26,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
+	"github.com/mailru/easygo/netpoll"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
 
@@ -101,6 +102,7 @@ type Server struct {
 
 	hubs     []*Hub
 	hashSeed maphash.Seed
+	poller   netpoll.Poller
 
 	PushNotificationsHub   PushNotificationsHub
 	pushNotificationClient *http.Client // TODO: move this to it's own package
@@ -223,6 +225,12 @@ func NewServer(options ...Option) (*Server, error) {
 		mlog.Error(err.Error())
 	}
 
+	poller, err := netpoll.New(nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create a netpoll instance")
+	}
+	s.poller = poller
+
 	// This is called after initLogging() to avoid a race condition.
 	mlog.Info("Server is initializing...", mlog.String("go_version", runtime.Version()))
 
@@ -288,7 +296,6 @@ func NewServer(options ...Option) (*Server, error) {
 		return nil, errors.Wrapf(err, "Unable to connect to cache provider")
 	}
 
-	var err error
 	if s.sessionCache, err = s.CacheProvider.NewCache(&cache.CacheOptions{
 		Size:           model.SESSION_CACHE_SIZE,
 		Striped:        true,
@@ -1612,4 +1619,8 @@ func (s *Server) HttpService() httpservice.HTTPService {
 
 func (s *Server) SetLog(l *mlog.Logger) {
 	s.Log = l
+}
+
+func (s *Server) Poller() netpoll.Poller {
+	return s.poller
 }
