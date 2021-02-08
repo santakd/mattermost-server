@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/pkg/errors"
 
@@ -69,6 +70,14 @@ func (b *LocalFileBackend) FileSize(path string) (int64, error) {
 		return 0, errors.Wrapf(err, "unable to get file size for %s", path)
 	}
 	return info.Size(), nil
+}
+
+func (b *LocalFileBackend) FileModTime(path string) (time.Time, error) {
+	info, err := os.Stat(filepath.Join(b.directory, path))
+	if err != nil {
+		return time.Time{}, errors.Wrapf(err, "unable to get modification time for file %s", path)
+	}
+	return info.ModTime(), nil
 }
 
 func (b *LocalFileBackend) CopyFile(oldPath, newPath string) error {
@@ -135,19 +144,19 @@ func (b *LocalFileBackend) RemoveFile(path string) error {
 	return nil
 }
 
-func (b *LocalFileBackend) ListDirectory(path string) (*[]string, error) {
+func (b *LocalFileBackend) ListDirectory(path string) ([]string, error) {
 	var paths []string
 	fileInfos, err := ioutil.ReadDir(filepath.Join(b.directory, path))
 	if err != nil {
 		if os.IsNotExist(err) {
-			return &paths, nil
+			return paths, nil
 		}
 		return nil, errors.Wrapf(err, "unable to list the directory %s", path)
 	}
 	for _, fileInfo := range fileInfos {
 		paths = append(paths, filepath.Join(path, fileInfo.Name()))
 	}
-	return &paths, nil
+	return paths, nil
 }
 
 func (b *LocalFileBackend) RemoveDirectory(path string) error {

@@ -9,9 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/mattermost/mattermost-server/v5/model"
 )
 
 func TestLRU(t *testing.T) {
@@ -122,10 +123,7 @@ func TestLRUMarshalUnMarshal(t *testing.T) {
 	var value2 map[string]interface{}
 	err = l.Get("test", &value2)
 	require.Nil(t, err)
-
-	v1, ok := value2["key1"].(int64)
-	require.True(t, ok, "unable to cast value")
-	assert.Equal(t, int64(1), v1)
+	assert.EqualValues(t, 1, value2["key1"])
 
 	v2, ok := value2["key2"].(string)
 	require.True(t, ok, "unable to cast value")
@@ -229,9 +227,9 @@ func TestLRUMarshalUnMarshal(t *testing.T) {
 
 	err = l.Set("session", session)
 	require.Nil(t, err)
+	var s = &model.Session{}
+	err = l.Get("session", s)
 
-	var s *model.Session
-	err = l.Get("session", &s)
 	require.Nil(t, err)
 	require.Equal(t, session, s)
 

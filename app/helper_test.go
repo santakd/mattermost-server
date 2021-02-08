@@ -10,9 +10,10 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"testing"
 	"time"
 
-	"testing"
+	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost-server/v5/config"
 	"github.com/mattermost/mattermost-server/v5/mlog"
@@ -23,7 +24,6 @@ import (
 	"github.com/mattermost/mattermost-server/v5/store/storetest/mocks"
 	"github.com/mattermost/mattermost-server/v5/testlib"
 	"github.com/mattermost/mattermost-server/v5/utils"
-	"github.com/stretchr/testify/require"
 )
 
 type TestHelper struct {
@@ -131,18 +131,6 @@ func setupTestHelper(dbStore store.Store, enterprise bool, includeCacheLayer boo
 	th.App.InitServer()
 
 	return th
-}
-
-func SetupEnterprise(tb testing.TB) *TestHelper {
-	if testing.Short() {
-		tb.SkipNow()
-	}
-	dbStore := mainHelper.GetStore()
-	dbStore.DropAllTables()
-	dbStore.MarkSystemRanUnitTests()
-	mainHelper.PreloadMigrations()
-
-	return setupTestHelper(dbStore, true, true, tb, nil)
 }
 
 func Setup(tb testing.TB) *TestHelper {
